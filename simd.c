@@ -146,9 +146,9 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
 int main() {
     srand(time(NULL));
 
-    FILE* output_file = fopen("simd_results_asm.txt", "w");
+    FILE* output_file = fopen("simd_wyniki_asm.txt", "w");
     if (!output_file) {
-        perror("Failed to open output file");
+        perror("Nie udalo sie otworzyc pliku");
         return 1;
     }
 
