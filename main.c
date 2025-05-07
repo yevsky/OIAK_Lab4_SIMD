@@ -50,7 +50,7 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
     double times_div[iterations];
 
     for (int iter = 0; iter < iterations; iter++) {
-        // Addition
+        // Dodawanie
         clock_t start = clock();
         for (int i = 0; i < x.size; i++) {
             __asm__ __volatile__ (
@@ -66,7 +66,7 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
         clock_t end = clock();
         times_add[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
-        // Subtraction
+        // Odejmowanie
         start = clock();
         for (int i = 0; i < x.size; i++) {
             __asm__ __volatile__ (
@@ -80,9 +80,9 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
             );
         }
         end = clock();
-        times_sub[iter] = ((double)(end - start)) / CLOCKS_PER_SEC;
+        times_sub[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
-        // Multiplication
+        // Mnożenie
         start = clock();
         for (int i = 0; i < x.size; i++) {
             __asm__ __volatile__ (
@@ -96,9 +96,9 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
             );
         }
         end = clock();
-        times_mul[iter] = ((double)(end - start)) / CLOCKS_PER_SEC;
+        times_mul[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
-        // Division
+        // Dzielenie
         start = clock();
         for (int i = 0; i < x.size; i++) {
             __asm__ __volatile__ (
@@ -112,10 +112,10 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
             );
         }
         end = clock();
-        times_div[iter] = ((double)(end - start)) / CLOCKS_PER_SEC;
+        times_div[iter] = ((double)(end - start)) * 1000/ CLOCKS_PER_SEC;
     }
 
-    // Calculate averages
+    // Obliczenie wartości średnich
     double avg_add = 0, avg_sub = 0, avg_mul = 0, avg_div = 0;
     for (int i = 0; i < iterations; i++) {
         avg_add += times_add[i];
@@ -131,7 +131,7 @@ void measure_simd_operations(int num_numbers, int iterations, FILE* output_file)
     // Write results
     fprintf(output_file, "Typ obliczen: SIMD\n");
     fprintf(output_file, "Liczba liczb: %d\n", num_numbers);
-    fprintf(output_file, "Sredni czas [s]:\n");
+    fprintf(output_file, "Sredni czas [ms]:\n");
     fprintf(output_file, "+ %.6f\n", avg_add);
     fprintf(output_file, "- %.6f\n", avg_sub);
     fprintf(output_file, "* %.6f\n", avg_mul);
@@ -160,7 +160,6 @@ int main() {
     }
 
     fclose(output_file);
-    printf("Results written to simd_results_asm.txt\n");
 
     return 0;
 }
