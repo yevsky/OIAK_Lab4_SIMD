@@ -39,28 +39,56 @@ void measure_sisd_operations(int num_numbers, int iterations, FILE* output_file)
     for (int iter = 0; iter < iterations; iter++) {
         clock_t start = clock();
         for (int i = 0; i < num_numbers; i++) {
-            z.data[i] = x.data[i] + y.data[i];
+            __asm__ __volatile__ (
+                "fld %1\n\t"         // Ładujemy y[i]
+                "fld %2\n\t"         // Ładujemy x[i]
+                "faddp\n\t"          // ST(1) = ST(0) + ST(1), pop
+                "fstp %0\n\t"        // Zapisujenmy to z[i]
+                : "=m" (z.data[i])
+                : "m" (y.data[i]), "m" (x.data[i])
+            );
         }
         clock_t end = clock();
         times_add[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
         start = clock();
         for (int i = 0; i < num_numbers; i++) {
-            z.data[i] = x.data[i] - y.data[i];
+            __asm__ __volatile__ (
+                "fld %1\n\t"         // Ładujemy y[i]
+                "fld %2\n\t"         // Ładujemy x[i]
+                "fsubp\n\t"          // ST(1) = ST(0) - ST(1), pop
+                "fstp %0\n\t"        // Zapisujenmy to z[i]
+                : "=m" (z.data[i])
+                : "m" (y.data[i]), "m" (x.data[i])
+            );
         }
         end = clock();
         times_sub[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
         start = clock();
         for (int i = 0; i < num_numbers; i++) {
-            z.data[i] = x.data[i] * y.data[i];
+            __asm__ __volatile__ (
+                "fld %1\n\t"         // Ładujemy y[i]
+                "fld %2\n\t"         // Ładujemy x[i]
+                "fmulp\n\t"          // ST(1) = ST(0) * ST(1), pop
+                "fstp %0\n\t"        // Zapisujenmy to z[i]
+                : "=m" (z.data[i])
+                : "m" (y.data[i]), "m" (x.data[i])
+            );
         }
         end = clock();
         times_mul[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
 
         start = clock();
         for (int i = 0; i < num_numbers; i++) {
-            z.data[i] = x.data[i] / y.data[i];
+            __asm__ __volatile__ (
+                "fld %1\n\t"         // Ładujemy y[i]
+                "fld %2\n\t"         // Ładujemy x[i]
+                "fdivp\n\t"          // ST(1) = ST(0) / ST(1), pop
+                "fstp %0\n\t"        // Zapisujenmy to z[i]
+                : "=m" (z.data[i])
+                : "m" (y.data[i]), "m" (x.data[i])
+            );
         }
         end = clock();
         times_div[iter] = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
